@@ -14,6 +14,35 @@ const Notification=({message, messageType})=>{
 
 }
 
+const CreateForm=({handleSubmit, handleChange, title, author, url})=>{
+  return (
+  <div>
+    <form onSubmit={handleSubmit}>
+      title
+      <input
+        value={title}
+        onChange={handleChange}
+        name="title"
+      /> <br />
+      author
+      <input
+        value={author}
+        onChange={handleChange}
+        name="author"
+      /> <br />
+      url
+      <input
+        value={url}
+        onChange={handleChange}
+        name="url"
+      /><br />
+      <button type="submit">post</button>
+    </form>
+  </div>
+)
+}
+
+
 class App extends React.Component {
   constructor(props) {
     super(props)
@@ -95,6 +124,7 @@ class App extends React.Component {
     this.setState({[event.target.name]: event.target.value})
   }
   handleBlogfieldChange=(event)=>{
+        console.log(event.target.name)
     this.setState({[event.target.name]: event.target.value})
   }
 
@@ -125,34 +155,19 @@ class App extends React.Component {
       </form>
     </div>
   )
-  const createForm=()=>(
-    <div>
-      <form onSubmit={this.createBlog}>
-        title
-        <input
-          type="text"
-          name="title"
-          value={this.state.title}
-          onChange={this.handleBlogfieldChange}
-        /> <br />
-        author
-        <input
-          type="text"
-          name="author"
-          value={this.state.author}
-          onChange={this.handleBlogfieldChange}
-        /> <br />
-        url
-        <input
-          type="text"
-          name="url"
-          value={this.state.url}
-          onChange={this.handleBlogfieldChange}
-        /><br />
-        <button type="submit">post</button>
-      </form>
-    </div>
-  )
+  const createForm=()=>{
+    return(
+      <div>
+        <CreateForm
+          handleSubmit={this.createBlog}
+          handleChange={this.handleBlogfieldChange}
+          title={this.state.title}
+          author={this.state.author}
+          url={this.state.url}
+        />
+      </div>
+    )
+  }
     const blogList=()=>(
       <div>
         <h2>blogs</h2>
