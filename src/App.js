@@ -80,8 +80,7 @@ class App extends React.Component {
       author: '',
       url: '',
       blogMessage: null,
-      messageType: null,
-      showBlog: null
+      messageType: null
     }
   }
 
@@ -95,6 +94,7 @@ class App extends React.Component {
       this.setState({user})
       blogService.setToken(user.token)
     }
+
   }
   login= async (event)=>{
     event.preventDefault()
@@ -150,19 +150,50 @@ class App extends React.Component {
     this.setState({[event.target.name]: event.target.value})
   }
   handleBlogfieldChange=(event)=>{
-        console.log(event.target.name)
     this.setState({[event.target.name]: event.target.value})
   }
-  toggleBlog=({id})=> {
-    console.log(this.state.showBlog)
-    if(this.state.showBlog===null) {
-      this.setState({showBlog: id})
-    } else {
-      this.setState({showBlog: null})
+
+  addLike= (blogId)=>{
+    return ()=>{
+    const blog=this.state.blogs.find(b=>b._id===blogId)
+
+    const changedBlog={...blog, likes: blog.likes+1 }
+
+
+    blogService.update(blogId, changedBlog)
+    .then(response=>{
+
+      return (this.setState({blogs:this.state.blogs.map(blog=>blog._id !== blogId ? blog : changedBlog)}))
+
+    })
+  }
+  }
+  sortBlogs=()=>{
+
+      const sortedblogs=this.state.blogs.sort(function (a, b){
+      return b.likes-a.likes
+    })
+        return ()=> {
+    this.setState({blogs:sortedblogs})
+  }
+  }
+  deleteBlog=(id)=> {
+    return ()=>{
+      blogService
+        .remove(id)
+        .then(response=>{
+          this.setState({blogs: this.state.blogs.filter(b=>b._id!==id)})
+        })
     }
+
   }
 
+
+
   render() {
+    this.sortBlogs()
+
+
     const loginForm=()=>(
     <div>
       <h2>kirjaudu</h2>
@@ -210,7 +241,7 @@ class App extends React.Component {
         <h2>blogs</h2>
         {this.state.blogs.map(blog =>{
           return(
-        <Blog key={blog._id} blog={blog} shown={this.state.showBlog} blogFunction={this.toggleBlog}/>)}
+        <Blog key={blog._id} blog={blog} whenLiked={this.addLike(blog._id)} deletion={this.deleteBlog(blog._id)}/>)}
         )}
       </div>
     )}
