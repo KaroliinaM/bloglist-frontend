@@ -2,6 +2,7 @@ import React from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import PropTypes from 'prop-types'
 
 const Notification=({message, messageType})=>{
   if(message===null){
@@ -42,6 +43,9 @@ const CreateForm=({handleSubmit, handleChange, title, author, url})=>{
 )
 }
 class Togglable extends React.Component {
+  static propTypes= {
+    buttonLabel: PropTypes.string.isRequired
+  }
   constructor(props) {
     super(props)
     this.state={
@@ -187,7 +191,13 @@ class App extends React.Component {
     }
 
   }
-
+canBeDeleted=(blog)=>{
+  if((blog.user.username===(JSON.parse(window.localStorage.getItem('loggedUser')).username))||(blog.user.username===undefined)){
+    return true
+  } else {
+    return false
+  }
+}
 
 
   render() {
@@ -241,7 +251,7 @@ class App extends React.Component {
         <h2>blogs</h2>
         {this.state.blogs.map(blog =>{
           return(
-        <Blog key={blog._id} blog={blog} whenLiked={this.addLike(blog._id)} deletion={this.deleteBlog(blog._id)}/>)}
+        <Blog key={blog._id} blog={blog} whenLiked={this.addLike(blog._id)} deletion={this.deleteBlog(blog._id)} poistettavissa={this.canBeDeleted(blog)} />)}
         )}
       </div>
     )}

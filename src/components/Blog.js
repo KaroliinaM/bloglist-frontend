@@ -28,8 +28,7 @@ class ToggleBlog extends React.Component{
   )
 }
 }
-const Blog = ({blog, whenLiked, deletion}) => {
-  const poistettavissa=(blog.user.username===(JSON.parse(window.localStorage.getItem('loggedUser')).username))||(blog.user.username===undefined) 
+const Blog = ({blog, whenLiked, deletion, poistettavissa}) => {
 
   const showDeletion={display: poistettavissa ? '' : 'none' }
 
@@ -37,8 +36,8 @@ const Blog = ({blog, whenLiked, deletion}) => {
   return (
 <div>
 
-  <ToggleBlog linkText={blog.title+ " " +blog.author}>
-  <div> {blog.url} <br /> {blog.likes}<button onClick={whenLiked} value={blog._id} >like</button> <br />
+  <div className="link"><ToggleBlog linkText={blog.title+ " " +blog.author}></div>
+  <div className="hidden"> {blog.url} <br /> {blog.likes}<button onClick={whenLiked} value={blog._id} >like</button> <br />
   <div style={showDeletion}><button onClick={deletion}>delete</button></div></div>
   </ToggleBlog>
 
