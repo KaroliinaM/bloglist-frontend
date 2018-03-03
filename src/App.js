@@ -41,7 +41,32 @@ const CreateForm=({handleSubmit, handleChange, title, author, url})=>{
   </div>
 )
 }
-
+class Togglable extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state={
+      visible:false
+    }
+  }
+  toggleVisibility=()=> {
+    this.setState({visible: !this.state.visible})
+  }
+  render() {
+    const hideWhenVisible={ display: this.state.visible ? 'none' : ''}
+    const showWhenVisible={ display: this.state.visible ? '' : 'none'}
+    return(
+      <div>
+        <div style={hideWhenVisible}>
+          <button onClick={this.toggleVisibility}>{this.props.buttonLabel}</button>
+        </div>
+        <div style={showWhenVisible}>
+          {this.props.children}
+          <button onClick={this.toggleVisibility}>cancel</button>
+        </div>
+      </div>
+    )
+  }
+}
 
 class App extends React.Component {
   constructor(props) {
@@ -55,7 +80,8 @@ class App extends React.Component {
       author: '',
       url: '',
       blogMessage: null,
-      messageType: null
+      messageType: null,
+      showBlog: null
     }
   }
 
@@ -127,6 +153,14 @@ class App extends React.Component {
         console.log(event.target.name)
     this.setState({[event.target.name]: event.target.value})
   }
+  toggleBlog=({id})=> {
+    console.log(this.state.showBlog)
+    if(this.state.showBlog===null) {
+      this.setState({showBlog: id})
+    } else {
+      this.setState({showBlog: null})
+    }
+  }
 
   render() {
     const loginForm=()=>(
@@ -158,6 +192,7 @@ class App extends React.Component {
   const createForm=()=>{
     return(
       <div>
+      <Togglable buttonLabel="create entry">
         <CreateForm
           handleSubmit={this.createBlog}
           handleChange={this.handleBlogfieldChange}
@@ -165,17 +200,20 @@ class App extends React.Component {
           author={this.state.author}
           url={this.state.url}
         />
+      </Togglable>
       </div>
     )
   }
-    const blogList=()=>(
+    const blogList=()=>{
+      return (
       <div>
         <h2>blogs</h2>
-        {this.state.blogs.map(blog =>
-        <Blog key={blog._id} blog={blog}/>
+        {this.state.blogs.map(blog =>{
+          return(
+        <Blog key={blog._id} blog={blog} shown={this.state.showBlog} blogFunction={this.toggleBlog}/>)}
         )}
       </div>
-    )
+    )}
     return (
       <div>
         <Notification message={this.state.blogMessage} messageType={this.state.messageType} />
