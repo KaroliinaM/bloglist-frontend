@@ -1,5 +1,5 @@
 import React from 'react'
-import {shallow} from 'enzyme'
+import {shallow, mount} from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 import Blog from './Blog'
 
@@ -18,12 +18,15 @@ describe('<Blog />', ()=>{
     const mockHandler1=jest.fn()
     const mockHandler2=jest.fn()
 
-    let blogComponent=shallow(<Blog blog={blog} whenLiked={mockHandler1} deletion={mockHandler2} poistettavissa={true} />)
-    const divInfo=blogComponent.find('.blogInfo')
-    const toggle=blogComponent.find('ToggleBlog')
+    let blogComponent=mount(<Blog blog={blog} whenLiked={mockHandler1} deletion={mockHandler2} poistettavissa={true} />)
+    const divInfo=blogComponent.find('.hiddenContent')
+    expect(divInfo.getElement().props.style).toEqual({display: 'none'})
+    const link=blogComponent.find('.clickedContent')
+    link.simulate('click')
+    const divInfo2=blogComponent.find('.hiddenContent')
+    expect(divInfo2.getElement().props.style).toEqual({display: ''})
 
-    const hiddenInfo=blogComponent.find('.hidden')
-    console.log(toggle.getElement())
+
 
 
   })

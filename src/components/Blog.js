@@ -17,9 +17,9 @@ class ToggleBlog extends React.Component{
   return (
     <div>
       <div style={hideWhenVisible}>
-        <div onClick={this.toggleVisibility}>{this.props.linkText}</div>
+        <div onClick={this.toggleVisibility} className="clickedContent" >{this.props.linkText} </div>
       </div>
-      <div style={showWhenVisible}>
+      <div style={showWhenVisible} className="hiddenContent">
         <div onClick={this.toggleVisibility}>{this.props.linkText}</div>
         {this.props.children}
 
@@ -36,8 +36,8 @@ const Blog = ({blog, whenLiked, deletion, poistettavissa}) => {
   return (
 <div>
 
-  <div className="link"><ToggleBlog linkText={blog.title+ " " +blog.author}></div>
-  <div className="hidden"> {blog.url} <br /> {blog.likes}<button onClick={whenLiked} value={blog._id} >like</button> <br />
+  <ToggleBlog linkText={blog.title+ " " +blog.author} >
+  <div> {blog.url} <br /> {blog.likes}<button onClick={whenLiked} value={blog._id} >like</button> <br />
   <div style={showDeletion}><button onClick={deletion}>delete</button></div></div>
   </ToggleBlog>
 

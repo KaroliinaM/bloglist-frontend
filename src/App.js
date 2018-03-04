@@ -2,75 +2,13 @@ import React from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import Notification from './components/Notification'
+import CreateForm from './components/CreateForm'
 import PropTypes from 'prop-types'
+import Togglable from './components/Togglable'
 
-const Notification=({message, messageType})=>{
-  if(message===null){
-    return null
-  } else if(messageType==='error'){
-    return(<div className="error">{message}</div>)
-  }else if (messageType==='success'){
-    return (<div className="success">{message}</div>)
-  }
 
-}
 
-const CreateForm=({handleSubmit, handleChange, title, author, url})=>{
-  return (
-  <div>
-    <form onSubmit={handleSubmit}>
-      title
-      <input
-        value={title}
-        onChange={handleChange}
-        name="title"
-      /> <br />
-      author
-      <input
-        value={author}
-        onChange={handleChange}
-        name="author"
-      /> <br />
-      url
-      <input
-        value={url}
-        onChange={handleChange}
-        name="url"
-      /><br />
-      <button type="submit">post</button>
-    </form>
-  </div>
-)
-}
-class Togglable extends React.Component {
-  static propTypes= {
-    buttonLabel: PropTypes.string.isRequired
-  }
-  constructor(props) {
-    super(props)
-    this.state={
-      visible:false
-    }
-  }
-  toggleVisibility=()=> {
-    this.setState({visible: !this.state.visible})
-  }
-  render() {
-    const hideWhenVisible={ display: this.state.visible ? 'none' : ''}
-    const showWhenVisible={ display: this.state.visible ? '' : 'none'}
-    return(
-      <div>
-        <div style={hideWhenVisible}>
-          <button onClick={this.toggleVisibility}>{this.props.buttonLabel}</button>
-        </div>
-        <div style={showWhenVisible}>
-          {this.props.children}
-          <button onClick={this.toggleVisibility}>cancel</button>
-        </div>
-      </div>
-    )
-  }
-}
 
 class App extends React.Component {
   constructor(props) {
@@ -93,6 +31,8 @@ class App extends React.Component {
       this.setState({ blogs })
     )
     const loggedUserJSON=window.localStorage.getItem('loggedUser')
+    console.log('mount')
+
     if(loggedUserJSON) {
       const user=JSON.parse(loggedUserJSON)
       this.setState({user})
@@ -192,12 +132,13 @@ class App extends React.Component {
 
   }
 canBeDeleted=(blog)=>{
-  if((blog.user.username===(JSON.parse(window.localStorage.getItem('loggedUser')).username))||(blog.user.username===undefined)){
+  if((blog.user.username===(JSON.parse(window.localStorage.getItem('loggedUser')).username))/**||(blog.user.username===undefined)**/){
     return true
   } else {
     return false
   }
 }
+
 
 
   render() {
@@ -257,12 +198,14 @@ canBeDeleted=(blog)=>{
     )}
     return (
       <div>
+
         <Notification message={this.state.blogMessage} messageType={this.state.messageType} />
         {this.state.user===null ?
           loginForm() :
           <div><p>{this.state.user.name} logged in <button type="submit" onClick={this.logout}>logout</button></p>
           {createForm()}
           {blogList()}
+
           </div>
         }
       </div>
